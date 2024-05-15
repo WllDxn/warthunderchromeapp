@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "War Thunder App",
+  "version": "1.0",
+  "description": "A Firefox extension that displays vehicle battle ratings for War Thunder",
+  "permissions": [
+    "storage",
+    "webRequest"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://wiki.warthunder.com/Category:*"],
+      "js": [
+        "lib/jquery-3.7.1.min.js",
+        "src/utils/urlUtils.js",
+        "src/utils/storageService.js",
+        "src/services/vehicleDataFetcher.js",
+        "src/services/battleRatingsService.js",
+        "src/components/battleTypeSelector.js",
+        "main.js"
+      ],
+      "css": ["selector.css"]
+    }
+  ]
+}

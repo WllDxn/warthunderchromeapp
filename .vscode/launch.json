@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch extension",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "url": "https://wiki.warthunder.com/Category:Britain_aircraft",
+            "addonPath": "${workspaceFolder}"
+        }
+    ]
+}
