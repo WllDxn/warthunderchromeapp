@@ -1,13 +1,21 @@
 function createBattleTypeSelector(currentBattleType) {
   const battleTypes = ["ab", "rb", "sb"];
-  const inputs = battleTypes.map(type => `
-    <input id="${type}" name="state-d" type="radio" ${type === currentBattleType ? 'checked' : ''}>
-    <label for="${type}">${type.toUpperCase()}</label>
-  `).join('');
-
   const container = document.createElement("div");
   container.classList.add("switch-field");
-  container.innerHTML = String(inputs);
+  const inputs = battleTypes.flatMap(type => {
+    const inputElement = document.createElement("input");
+    inputElement.id = type;
+    inputElement.name = "state-d";
+    inputElement.type = "radio";
+    if (type === currentBattleType) {
+      inputElement.checked = true;
+    }
+    container.appendChild(inputElement)
+    const labelElement = document.createElement("label");
+    labelElement.setAttribute("for", type);
+    labelElement.textContent = type.toUpperCase();
+    container.appendChild(labelElement)
+  });
   return container;
 }
 
