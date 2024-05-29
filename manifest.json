@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "War Thunder Wiki BattleRatings",
   "version": "1.0",
-  "description": "A Firefox extension that displays vehicle battle ratings for War Thunder",
+  "description": "Displays vehicle battle ratings for War Thunder",
   "permissions": [
     "storage",
     "webRequest"
@@ -11,16 +11,20 @@
     {
       "matches": ["*://wiki.warthunder.com/Category:*"],
       "js": [
-        "services/vehicleDataFetcher.js",
-        "services/battleRatingsService.js",
-        "components/battleTypeSelector.js",
-        "main.js"
+        "data/services/vehicleDataFetcher.js",
+        "data/services/battleRatingsService.js",
+        "data/components/battleTypeSelector.js",
+        "data/main.js"
       ],
-      "css": ["components/battleTypeSelector.css"]
+      "css": ["data/components/battleTypeSelector.css"]
     }
   ],
-
   "icons": {
-    "680": "icons/icon.png"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "64": "icons/icon64.png",
+    "96": "icons/icon96.png",
+    "128": "icons/icon128.png"
   }
 }

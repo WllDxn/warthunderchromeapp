@@ -8,6 +8,7 @@ function injectBattleTypeSelector(currentBattleType) {
     input.addEventListener("click", handleBattleTypeSelection);
   });
 }
+
 function getFromStorage(storageRef) {
   try {
     return browser.storage.local.get(storageRef);
@@ -69,6 +70,7 @@ function appendRating(element, battleType, rating, currentBattleType) {
   currentRating.textContent = rating;
   element.appendChild(currentRating);
 }
+
 async function main() {
   try {
     const currentData = await getFromStorage(null);
@@ -77,16 +79,16 @@ async function main() {
     const vehicleUris = Array.from(
       document.querySelectorAll("#mw-content-text .tree-item a")
     ).map((a) => a.getAttribute("href"));
-    const instorage = !vehicleUris.some(
-      (uri) => Object.keys(currentData).includes(uri)
+    const storageIsEmpty = !vehicleUris.some((uri) =>
+      Object.keys(currentData).includes(uri)
     );
-    const vehicles = instorage
+    const vehicles = storageIsEmpty
       ? await fetchCurrentPageVehicleData()
       : (({ battletype, ...o }) => o)(currentData);
     await addBRtoVehicle(vehicles, currentBattleType);
     addBRtoGroup(vehicles, currentBattleType);
-    if (!instorage){
-      fetchCurrentPageVehicleData();
+    if (!storageIsEmpty) {
+      fetchCurrentPageVehicleData((fetchall = true));
     }
   } catch (error) {
     console.error("Error in main function:", error);

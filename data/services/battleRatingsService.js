@@ -1,7 +1,11 @@
 const parseBattleRatings = (doc, vehicleUrl) => {
-  const tableRows = doc.querySelector(".general_info_br tbody")?.querySelectorAll("tr");
+  const tableRows = doc
+    .querySelector(".general_info_br tbody")
+    ?.querySelectorAll("tr");
   if (tableRows?.length >= 2) {
-    const rowCells = Array.from(tableRows[1].querySelectorAll("td")).map(cell => cell.textContent.trim());
+    const rowCells = Array.from(tableRows[1].querySelectorAll("td")).map(
+      (cell) => cell.textContent.trim()
+    );
     return {
       ab: rowCells[0],
       rb: rowCells[1],
@@ -18,7 +22,7 @@ const getBattleRatingsFromHref = async (vehicleUrl) => {
     const url = `https://${document.location.hostname}${vehicleUrl}`;
     const response = await fetch(url);
     const htmlContent = await response.text();
-    const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
     const vehicleBattleRatings = parseBattleRatings(doc, vehicleUrl);
     if (vehicleBattleRatings) {
       const storageObject = { [vehicleUrl]: vehicleBattleRatings };

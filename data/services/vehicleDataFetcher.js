@@ -1,15 +1,14 @@
-const fetchCurrentPageVehicleData = async () => {
-  const currentUrl = window.location.href;
-
+const fetchCurrentPageVehicleData = async (fetchall = false) => {
+  const baseurl = window.location.href;
   const urlConfig = [
     { pattern: /ground/, urls: ["/Land"] },
     { pattern: /Bluewater_Fleet|Coastal_Fleet|ships/, urls: ["/Sea"] },
     { pattern: /aircraft|helicopter/, urls: [""] },
-    { urls: ["", "/Land", "/Sea"] }, // Default case
+    { urls: ["", "/Land", "/Sea"] },
   ];
-
-  const config = urlConfig.find((cfg) => cfg.pattern?.test(currentUrl)) || urlConfig[3];
-       
+  const config = fetchall
+    ? urlConfig[3]
+    : urlConfig.find((cfg) => cfg.pattern.test(baseurl)) || urlConfig[3];
   const vehicledata = await fetchVehicleData(config.urls);
   fetchVehicleData(
     urlConfig[3].urls.filter((url) => !config.urls.includes(url))
@@ -61,4 +60,3 @@ const fetchVehicleData = async (urls) => {
   browser.storage.local.set(vehicleRatings);
   return vehicleRatings;
 };
-
