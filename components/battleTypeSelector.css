@@ -1,6 +1,7 @@
 .switch-field {
 	display: flex;
 	overflow: hidden;
+	padding-left: 30px;
 }
 
 .switch-field input {
@@ -10,6 +11,7 @@
 	width: 1px;
 	border: 0;
 	overflow: hidden;
+	
 }
 
 .switch-field label {

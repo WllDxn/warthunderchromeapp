@@ -1,96 +1,93 @@
 function injectBattleTypeSelector(currentBattleType) {
-  const selectorLocation = $("body").find("#firstHeading")[0];
+  const selectorLocation = document.querySelector("#firstHeading");
+  selectorLocation.style.display = "flex";
   const selectorHtml = createBattleTypeSelector(currentBattleType);
-  $(selectorLocation).append(selectorHtml);
+  selectorLocation.appendChild(selectorHtml);
 
-  $('input[name="state-d"]').on("click", handleBattleTypeSelection);
+  document.querySelectorAll('input[name="state-d"]').forEach((input) => {
+    input.addEventListener("click", handleBattleTypeSelection);
+  });
+}
+function getFromStorage(storageRef) {
+  try {
+    return browser.storage.local.get(storageRef);
+  } catch (error) {
+    console.error("Error getting vehicle from storage:", error);
+    throw error;
+  }
 }
 
+function addBRtoGroup(vehicles, currentBattleType) {
+  Array.from(
+    document.querySelectorAll("#mw-content-text .tree-group-collapse")
+  ).map((treeGroup) => {
+    const vehicleUris = [...treeGroup.querySelectorAll("a")].map((a) =>
+      a.getAttribute("href")
+    );
+    const groupRatings = vehicleUris.map((vehicleUri) => vehicles[vehicleUri]);
+    const vehicleRatings = groupRatings.reduce((acc, obj) => {
+      Object.entries(obj).forEach(([key, value]) => {
+        acc[key] = {
+          min: Math.min(acc[key]?.min ?? value, value),
+          max: Math.max(acc[key]?.max ?? value, value),
+        };
+      });
+      return acc;
+    }, {});
+    let textElement = treeGroup.nextElementSibling.firstChild;
+    textElement.appendChild(document.createElement("br"));
+    Object.entries(vehicleRatings).forEach(([battleType, rating]) => {
+      appendRating(
+        textElement,
+        battleType,
+        `${rating["min"].toFixed(1)}-${rating["max"].toFixed(1)}`,
+        currentBattleType
+      );
+    });
+  });
+}
+
+async function addBRtoVehicle(vehicles, currentBattleType) {
+  document
+    .querySelectorAll("#mw-content-text .tree-item")
+    .forEach(async (treeItem) => {
+      const vehicleUri = treeItem.querySelector("a").getAttribute("href");
+      let vehicleRatings =
+        vehicles[vehicleUri] || (await getBattleRatingsFromHref(vehicleUri));
+      const textElement = treeItem.querySelector(".tree-item-text");
+      textElement.appendChild(document.createElement("br"));
+      Object.entries(vehicleRatings).forEach(([battleType, rating]) => {
+        appendRating(textElement, battleType, rating, currentBattleType);
+      });
+    });
+}
+
+function appendRating(element, battleType, rating, currentBattleType) {
+  const currentRating = document.createElement("span");
+  currentRating.className = `tree-item-text-scroll brdisplay${battleType} brdisplay`;
+  currentRating.style.display = battleType === currentBattleType ? "" : "none";
+  currentRating.textContent = rating;
+  element.appendChild(currentRating);
+}
 async function main() {
   try {
-    let currentBattleType = await getFromStorage("battletype");
-    if (Object.keys(currentBattleType).length === 0) {
-      currentBattleType = "rb";
-    } else {
-      currentBattleType = currentBattleType["battletype"];
-    }
-
+    const currentData = await getFromStorage(null);
+    const currentBattleType = currentData.battletype || "rb";
     injectBattleTypeSelector(currentBattleType);
-
-    let vehicleUris = [];
-
-    $("#mw-content-text")
-      .find(".tree-item")
-      .each(async function () {
-        const $treeItem = $(this);
-        const vehicleUri = $treeItem.find("a").attr("href");
-        vehicleUris.push(vehicleUri);
-      });
-    let vehicles = await getFromStorage(vehicleUris);
-    console.log(Object.keys(vehicles).length);
-    vehicles =
-      Object.keys(vehicles).length === 0
-        ? await fetchCurrentPageVehicleData()
-        : vehicles;
-
-    $("#mw-content-text")
-      .find(".tree-item")
-      .each(async function () {
-        const $treeItem = $(this);
-        const vehicleUri = $treeItem.find("a").attr("href");
-        let vehicleRatings = vehicles[vehicleUri];
-        if (vehicleRatings == null) {
-          vehicleRatings = await getBattleRatingsFromHref(vehicleUri);
-        }
-
-        const $textElement = $treeItem.find(".tree-item-text")[0];
-        $textElement.appendChild(document.createElement("br"));
-
-        for (const battleType in vehicleRatings) {
-          const currentRating = document.createElement("span");
-          currentRating.className = `tree-item-text-scroll brdisplay${battleType}`;
-          currentRating.style.display =
-            battleType === currentBattleType ? "inline" : "none";
-          currentRating.textContent = vehicleRatings[battleType];
-          $textElement.appendChild(currentRating);
-
-          if (
-            $textElement.parentNode.parentNode.classList.contains(
-              "tree-group-collapse"
-            )
-          ) {
-            const treeGroup =
-              $textElement.parentNode.parentNode.nextElementSibling.firstChild;
-            if (treeGroup.childNodes.length === 1) {
-              treeGroup.appendChild(document.createElement("br"));
-            }
-
-            if ($(treeGroup).find(`.brdisplay${battleType}`).length === 0) {
-              const rating = currentRating.cloneNode(true);
-              rating.className = `tree-item-text-scroll brdisplay${battleType}`;
-              rating.textContent = `${vehicleRatings[battleType]}-${vehicleRatings[battleType]}`;
-              treeGroup.appendChild(rating);
-            } else {
-              const vals = $(treeGroup).find(`.brdisplay${battleType}`)[0]
-                .textContent;
-              const minMax = vals.split("-");
-              if (
-                parseFloat(vehicleRatings[battleType]) < parseFloat(minMax[0])
-              ) {
-                minMax[0] = vehicleRatings[battleType];
-              }
-              if (
-                parseFloat(vehicleRatings[battleType]) > parseFloat(minMax[1])
-              ) {
-                minMax[1] = vehicleRatings[battleType];
-              }
-              $(treeGroup).find(
-                `.brdisplay${battleType}`
-              )[0].textContent = `${minMax[0]}-${minMax[1]}`;
-            }
-          }
-        }
-      });
+    const vehicleUris = Array.from(
+      document.querySelectorAll("#mw-content-text .tree-item a")
+    ).map((a) => a.getAttribute("href"));
+    const instorage = !vehicleUris.some(
+      (uri) => Object.keys(currentData).includes(uri)
+    );
+    const vehicles = instorage
+      ? await fetchCurrentPageVehicleData()
+      : (({ battletype, ...o }) => o)(currentData);
+    await addBRtoVehicle(vehicles, currentBattleType);
+    addBRtoGroup(vehicles, currentBattleType);
+    if (!instorage){
+      fetchCurrentPageVehicleData();
+    }
   } catch (error) {
     console.error("Error in main function:", error);
   }

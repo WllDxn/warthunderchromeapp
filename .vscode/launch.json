@@ -6,7 +6,7 @@
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "url": "https://wiki.warthunder.com/Category:Britain_aircraft",
+            "url": "https://wiki.warthunder.com/Category:Sweden_aircraft",
             "addonPath": "${workspaceFolder}"
         }
     ]
