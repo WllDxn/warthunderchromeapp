@@ -1,4 +1,4 @@
-const fetchCurrentPageVehicleData = async (fetchall = false) => {
+const fetchCurrentPageVehicleData = async (fetchall = false, notfound = []) => {
   const baseurl = window.location.href;
   const urlConfig = [
     { pattern: /ground/, urls: ["/Land"] },
@@ -13,6 +13,8 @@ const fetchCurrentPageVehicleData = async (fetchall = false) => {
   fetchVehicleData(
     urlConfig[3].urls.filter((url) => !config.urls.includes(url))
   );
+  notfound.filter(x => (!Object.keys(vehicledata).includes(x))).forEach(unfound => getBattleRatingsFromHref(unfound))
+  
   return vehicledata;
 };
 

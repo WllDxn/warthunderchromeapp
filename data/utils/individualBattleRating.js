@@ -1,3 +1,27 @@
+
+const getBattleRatingsFromHref = async (vehicleUrl) => {
+  try {
+    if (Object.keys(await getFromStorage()).includes(vehicleUrl)) {
+      return null;
+    }
+    console.log("Fetching battle ratings for:", vehicleUrl);
+    const url = `https://${document.location.hostname}${vehicleUrl}`;
+    const response = await fetch(url);
+    const htmlContent = await response.text();
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
+    const vehicleBattleRatings = parseBattleRatings(doc, vehicleUrl);
+    if (vehicleBattleRatings) {
+      const storageObject = { [vehicleUrl]: vehicleBattleRatings };
+      browser.storage.local.set(storageObject);
+      return vehicleBattleRatings;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching vehicle battle ratings:", error);
+    throw error;
+  }
+};
+
 const parseBattleRatings = (doc, vehicleUrl) => {
   const tableRows = doc
     .querySelector(".general_info_br tbody")
@@ -14,24 +38,5 @@ const parseBattleRatings = (doc, vehicleUrl) => {
   } else {
     console.error("Unexpected table structure for URL:", vehicleUrl);
     return null;
-  }
-};
-
-const getBattleRatingsFromHref = async (vehicleUrl) => {
-  try {
-    const url = `https://${document.location.hostname}${vehicleUrl}`;
-    const response = await fetch(url);
-    const htmlContent = await response.text();
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    const vehicleBattleRatings = parseBattleRatings(doc, vehicleUrl);
-    if (vehicleBattleRatings) {
-      const storageObject = { [vehicleUrl]: vehicleBattleRatings };
-      browser.storage.local.set(storageObject);
-      return vehicleBattleRatings;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error fetching vehicle battle ratings:", error);
-    throw error;
   }
 };

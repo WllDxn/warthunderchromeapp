@@ -1,29 +1,36 @@
-function createBattleTypeSelector(currentBattleType) {
+const injectBattleTypeSelector = (currentBattleType) => {
+  const selectorLocation = document.querySelector("#firstHeading");
+  selectorLocation.style.display = "flex";
+  selectorLocation.appendChild(createBattleTypeSelector(currentBattleType));
+}
+
+const createBattleTypeSelector = (currentBattleType) => {
   const battleTypes = ["ab", "rb", "sb"];
   const container = document.createElement("div");
   container.classList.add("switch-field");
-  const inputs = battleTypes.flatMap(type => {
+  container.id = "battleTypeSelector";
+  battleTypes.map(type => {
     const inputElement = document.createElement("input");
     inputElement.id = type;
-    inputElement.name = "state-d";
+    inputElement.name = "battleType";
     inputElement.type = "radio";
     if (type === currentBattleType) {
       inputElement.checked = true;
     }
-    container.appendChild(inputElement)
+    inputElement.addEventListener("click", handleBattleTypeSelection)    
     const labelElement = document.createElement("label");
     labelElement.setAttribute("for", type);
-    labelElement.textContent = type.toUpperCase();
+    labelElement.textContent = type.toUpperCase();    
+    container.appendChild(inputElement)
     container.appendChild(labelElement)
   });
   return container;
 }
 
-const handleBattleTypeSelection = (event) => {
+const handleBattleTypeSelection = async (event) => {
   const selectedBattleType = event.target.id;
   document.querySelectorAll(".brdisplayab, .brdisplayrb, .brdisplaysb").forEach(element => {
     element.style.display = element.classList.contains(`brdisplay${selectedBattleType}`) ? "block" : "none";
   });
-
-  browser.storage.local.set({ battletype: selectedBattleType });
+  await browser.storage.local.set({ battletype: selectedBattleType });
 };

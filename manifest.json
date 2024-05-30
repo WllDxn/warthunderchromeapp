@@ -11,9 +11,10 @@
     {
       "matches": ["*://wiki.warthunder.com/Category:*"],
       "js": [
-        "data/services/vehicleDataFetcher.js",
-        "data/services/battleRatingsService.js",
+        "data/utils/groupBattleRating.js",
+        "data/utils/individualBattleRating.js",
         "data/components/battleTypeSelector.js",
+        "data/utils/techTreePage.js",
         "data/main.js"
       ],
       "css": ["data/components/battleTypeSelector.css"]

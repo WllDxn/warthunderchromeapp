@@ -1,17 +1,10 @@
-function injectBattleTypeSelector(currentBattleType) {
-  const selectorLocation = document.querySelector("#firstHeading");
-  selectorLocation.style.display = "flex";
-  const selectorHtml = createBattleTypeSelector(currentBattleType);
-  selectorLocation.appendChild(selectorHtml);
-
-  document.querySelectorAll('input[name="state-d"]').forEach((input) => {
-    input.addEventListener("click", handleBattleTypeSelection);
-  });
-}
-
-function getFromStorage(storageRef) {
+async function getFromStorage(storageRef=null) {
   try {
-    return browser.storage.local.get(storageRef);
+    if (storageRef) {
+      return browser.storage.local.get(storageRef);
+    } else {
+      return await browser.storage.local.get(null);
+    }
   } catch (error) {
     console.error("Error getting vehicle from storage:", error);
     throw error;
@@ -75,7 +68,6 @@ async function main() {
   try {
     const currentData = await getFromStorage(null);
     const currentBattleType = currentData.battletype || "rb";
-    injectBattleTypeSelector(currentBattleType);
     const vehicleUris = Array.from(
       document.querySelectorAll("#mw-content-text .tree-item a")
     ).map((a) => a.getAttribute("href"));
@@ -95,4 +87,4 @@ async function main() {
   }
 }
 
-main();
+// main();
