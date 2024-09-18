@@ -1,7 +1,23 @@
+.hidden{
+	display: none;
+}
+#popup-content{
+    margin: auto;
+    text-align: center;
+}
+.popup {
+	background-color: rgb(53, 53, 53);
+	border-color: black;
+}
 .switch-field {
 	display: flex;
 	overflow: hidden;
+}
+#battleTypeSelector {
+	display: flex;
+	overflow: hidden;
 	padding-left: 30px;
+	padding-right: 10px;
 }
 
 .switch-field input {
@@ -11,20 +27,19 @@
 	width: 1px;
 	border: 0;
 	overflow: hidden;
-	
+	text-align: center;	
 }
 
 .switch-field label {
 	background-color: #e4e4e4;
 	color: rgba(0, 0, 0, 0.6);
 	font-size: 14px;
-	line-height: 1;
-	text-align: center;
-	padding: 8px 16px;
+	padding: 8px 18px;
 	margin-right: -1px;
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
 	transition: all 0.2s ease-in-out;
+	font-family: 'Roboto',sans-serif !important;
 }
 
 .switch-field label:hover {
@@ -32,7 +47,7 @@
 }
 
 .switch-field input:checked + label {
-	background-color: #a5dc86;
+	background-color: #71db80;
 	box-shadow: none;
 }
 
