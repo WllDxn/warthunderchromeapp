@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="battleTypeSelector.css" />
+  </head>
+
+  <body class="popup">
+    <div id="popup-content">
+      <img src="../../icons/icon64.png" alt="Icon" />
+
+      <br>
+      <div class="switch-field" disabled="true">
+        <input id="ab" name="battleType" type="radio"/>
+        <label for="ab">AB</label>
+        <input id="rb" name="battleType" type="radio"/>
+        <label for="rb">RB</label>
+        <input id="sb" name="battleType" type="radio"/>
+        <label for="sb">SB</label>
+      </div>   
+      <br>
+      <div id="options">
+        <button type="button" id="cacheClear">Clear Cache</button> 
+      </div>   
+    </div>
+
+    <script src="toolbarBattleTypeSelector.js"></script>
+    <script src="toolbar.js"></script>
+  </body>
+</html>
