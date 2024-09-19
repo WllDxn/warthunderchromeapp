@@ -131,7 +131,7 @@ async function folderText(ratings, currentBattleType) {
       const minMaxValues = getMinMax(vehicleRatings);
       const textElement = folderElement.nextElementSibling.firstChild;
       textElement.appendChild(document.createElement("br"));
-      createRatingsElement(textElement, minMaxValues, currentBattleType);
+      createRatingsElement(textElement, minMaxValues, currentBattleType, group=true);
     })
   );
 }
@@ -152,14 +152,15 @@ async function folderText(ratings, currentBattleType) {
  * to determine which rating should be visible.
  * @returns {Promise<void>} A promise that resolves when all rating elements have been created and appended.
  */
-async function createRatingsElement(textElement, ratings, currentBattleType) {
+async function createRatingsElement(textElement, ratings, currentBattleType, group=false) {
   const vehicleRatings = await ratings;
   let cbt = await currentBattleType;
   ["ab", "rb", "sb"].map((battleType) => {
     let currentRating = document.createElement("span");
-    currentRating.className = `tree-item-text-scroll brdisplay${battleType} brdisplay`;
+    currentRating.className = `tree-item-text-scroll brdisplay${battleType} brdisplay${group ? ' brdisplaygroup' : ''}`;
     currentRating.classList.toggle("hidden", battleType !== cbt);
-    currentRating.textContent = vehicleRatings[battleType];
+    currentRating.textContent = vehicleRatings[battleType];    
+    
     textElement.appendChild(currentRating);
   });
 }

@@ -36,8 +36,12 @@ function handleBattleTypeClick(e) {
     .catch(reportError);
 }
 
+
 async function clearCache(tabId) {
-  const storageItem = await browser.storage.local.get("battletype");
+  const storageItem = await browser.storage.local.get([
+    "battletype",
+    "groupDisplay",
+  ]);
   await browser.storage.local.clear();
   await browser.storage.local.set(storageItem);
   const tabs = await browser.tabs.query({ currentWindow: true, active: true });
@@ -62,8 +66,25 @@ function reportError(error) {
 function reportExecuteScriptError(error) {
   console.error(`Failed to execute content script: ${error.message}`);
 }
-// Initialize the extension
-browser.tabs
-  .executeScript({ file: "toolbarBattleTypeSelector.js" })
-  .then(listenForClicks)
-  .catch(reportExecuteScriptError);
+
+async function getPage() {
+  try {
+    const tabs = await browser.tabs.query({
+      currentWindow: true,
+      active: true,
+    });
+    if (tabs[0].url.includes("://wiki.warthunder.com/")) {
+      document.querySelectorAll(".disabled").forEach((element) => {
+        element.classList.toggle("disabled");
+        element.disabled = false;
+      });
+      await browser.tabs.executeScript({
+        file: "toolbarBattleTypeSelector.js",
+      });
+      listenForClicks();
+    }
+  } catch (error) {
+    reportExecuteScriptError(error);
+  }
+}
+getPage();

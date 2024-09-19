@@ -9,7 +9,7 @@
     "activetab",
     "scripting",
     "tabs",
-    "<all_urls>"
+    "*://wiki.warthunder.com/*"
   ],
   "content_scripts": [
     {
@@ -27,7 +27,7 @@
         "data/utils/individualBattleRating.js",
         "data/utils/techTreePage.js"
       ],
-      "css": ["data/components/battleTypeSelector.css"]
+      "css": ["data/components/styles.css"]
     }
   ],
   "browser_action": {
@@ -35,7 +35,6 @@
     "default_title": "WarThunderChrome",
     "default_popup": "data/components/toolbar.html"
   },
-
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
